@@ -1,15 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import PlayButton from './PlayButton';
+import Star from './Star';
 
 function App() {
-  const stars = 5;
-  const colors = {
-    available: "red",
-    used: 'lightgreen',
-    wrong: 'lightcoral',
-    candidate: 'deepskyblue',
-  };
-
   const utils = {
     // sum an array
     sum: arr => arr.reduce((acc, curr) => acc += curr, 0),
@@ -39,20 +33,25 @@ function App() {
     }
   }
   
+  const [stars, setStars] = useState(utils.random(1,9), );
+
+  const colors = {
+    available: "red",
+    used: 'lightgreen',
+    wrong: 'lightcoral',
+    candidate: 'deepskyblue',
+  };
+
   return (
     <div className="App">
       <h3>Pick 1 or more number numbers that sum up to the number of stars</h3>
       <div className="stars-container">
-        {
-          utils.range(1, stars).map(starId => 
-             <div key={starId} className="star" />
-          )
-        }
+        <Star range={utils.range(1, stars)} />
       </div>
       <div className="key-pad">
         {
           utils.range(1, 9).map(buttonId => 
-            <button key={buttonId} className="star">{buttonId}</button>
+            <PlayButton key={buttonId} buttonId={buttonId}/>
           )
         }
       </div>
