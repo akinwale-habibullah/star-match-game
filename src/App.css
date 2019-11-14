@@ -5,17 +5,34 @@ body {
 }
 
 h3 {
+  padding: 0px;
+  margin: 0px;
   text-align: center;
 }
 
 .App {
   padding: 10px;
-  height: 200px;
+  height: 600px;
   width: 70%;
   margin: 0 auto;
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: 0.5fr 1fr 1fr;
 }
 
 
+.stars-container {
+  height: 100%;
+  background-color: #FFF;
+}
 
+.key-pad {
+  margin-top: 5px;
+  height: 100%;
+  background-color: turquoise;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+}
+
+button {
+  border: solid 0.5px red; 
+}
