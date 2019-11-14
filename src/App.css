@@ -19,7 +19,6 @@ h3 {
   grid-template-rows: 0.5fr 1fr 1fr;
 }
 
-
 .stars-container {
   height: 100%;
   background-color: #FFF;
@@ -28,11 +27,44 @@ h3 {
 .key-pad {
   margin-top: 5px;
   height: 100%;
-  background-color: turquoise;
   display: grid;
+  gap: 10px;
   grid-template-columns: repeat(3,1fr);
 }
 
 button {
   border: solid 0.5px red; 
+}
+
+@media only screen and (min-width: 600px) {
+  .App {
+    height: 320px;
+    grid-template-rows: .3fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  h3{
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+
+  .stars-container{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  .key-pad {
+    margin-top: 0px;
+  }
+
+  .key {
+    margin: 0px;
+  }
+
+  button{
+    border: solid thin blue;
+  }
 }
