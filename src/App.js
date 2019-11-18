@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
-import PlayButton from './PlayButton';
-import Star from './Star';
+import PlayButton from './components/PlayButton';
+import Star from './components/Star';
 
 function App() {
   const utils = {
