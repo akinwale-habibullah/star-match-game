@@ -1,10 +1,10 @@
 import React from 'react';
 
-function PlayButton({ buttonId, colors, status, backgroundColor }) {
+function PlayButton({ buttonId, status, backgroundColor, onClick }) {
   return (
     <button
       className="star"
-      onClick={() => console.log('Num', buttonId)}
+      onClick={() => onClick(buttonId, status)}
       style={{ backgroundColor: backgroundColor }}
     >
       {buttonId}

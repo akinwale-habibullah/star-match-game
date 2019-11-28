@@ -59,6 +59,27 @@ function App() {
     candidate: 'deepskyblue'
   };
 
+  const onNumberClick = (number, currentStatus) => {
+    if (currentStatus === 'used') {
+      return;
+    }
+
+    // candidateNums
+    const newCandidateNums = currentStatus === 'available'
+        ? [...candidateNums, number]
+        : candidateNums.filter(cn => cn !== number)
+    if (utils.sum(newCandidateNums) !== stars) {
+      setCandidateNums(newCandidateNums);
+    } else {
+      const newAvailableNums = availableNums.filter((item) => {
+        return !newCandidateNums.includes(item)
+      });
+      setStars(utils.randomSumIn(newAvailableNums, 9));
+      setAvailableNums(newAvailableNums);
+      setCandidateNums([]);
+    }
+  }
+
   return (
     <div className="App">
       <h3>Pick 1 or more number numbers that sum up to the number of stars</h3>
@@ -71,7 +92,9 @@ function App() {
           <PlayButton
             key={buttonId}
             buttonId={buttonId}
+            status={numberStatus(buttonId)}
             backgroundColor={colors[numberStatus(buttonId)]}
+            onClick={onNumberClick}
           />
         ))}
       </div>
