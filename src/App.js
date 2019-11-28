@@ -4,50 +4,82 @@ import PlayButton from './components/PlayButton';
 import PlayAgain from './components/PlayAgain';
 import Star from './components/Star';
 
-function StarMatch({startNewGame}) {
-  const utils = {
-    // sum an array
-    sum: arr => arr.reduce((acc, curr) => (acc += curr), 0),
+const utils = {
+  // sum an array
+  sum: arr => arr.reduce((acc, curr) => (acc += curr), 0),
 
-    // create an array of numbers between min and max (edges included)
-    range: (min, max) =>
-      Array.from({ length: max - min + 1 }, (_, i) => min + i),
+  // create an array of numbers between min and max (edges included)
+  range: (min, max) =>
+    Array.from({ length: max - min + 1 }, (_, i) => min + i),
 
-    // pick a random number between min and max (edges included)
-    random: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
+  // pick a random number between min and max (edges included)
+  random: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
 
-    // Given an array of numbers and a max...
-    // Pick a random sum (< max) from the set of all available sums in arr
-    randomSumIn: (arr, max) => {
-      const sets = [[]];
-      const sums = [];
-      for (let i = 0; i < arr.length; i++) {
-        for (let j = 0, len = sets.length; j < len; j++) {
-          const candidateSet = sets[j].concat(arr[i]);
-          const candidateSum = utils.sum(candidateSet);
-          if (candidateSum <= max) {
-            sets.push(candidateSet);
-            sums.push(candidateSum);
-          }
+  // Given an array of numbers and a max...
+  // Pick a random sum (< max) from the set of all available sums in arr
+  randomSumIn: (arr, max) => {
+    const sets = [[]];
+    const sums = [];
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0, len = sets.length; j < len; j++) {
+        const candidateSet = sets[j].concat(arr[i]);
+        const candidateSum = utils.sum(candidateSet);
+        if (candidateSum <= max) {
+          sets.push(candidateSet);
+          sums.push(candidateSum);
         }
       }
-      return sums[utils.random(0, sums.length - 1)];
     }
-  };
+    return sums[utils.random(0, sums.length - 1)];
+  }
+};
 
+const useStarMatchGameState = () => {
   const [stars, setStars] = useState(utils.random(1, 9));
   const [availableNums, setAvailableNums] = useState(utils.range(1,9));
   const [candidateNums, setCandidateNums] = useState([]);
   const [secondsLeft, setSecondsLeft] = useState(10);
+
   useEffect(() => {
-    if (secondsLeft  > 0 && gameStatus === 'active') {
+    if (secondsLeft  > 0 && availableNums.length > 0) {
       const timerId = setTimeout(() => {
         setSecondsLeft(secondsLeft - 1);
       }, 1000);
-
+  
       return () => clearTimeout(timerId);
     }
   });
+
+  const setGameState = (newCandidateNums) => {
+    if (utils.sum(newCandidateNums) !== stars) {
+      setCandidateNums(newCandidateNums);
+    } else {
+      const newAvailableNums = availableNums.filter((item) => {
+        return !newCandidateNums.includes(item)
+      });
+      setStars(utils.randomSumIn(newAvailableNums, 9));
+      setAvailableNums(newAvailableNums);
+      setCandidateNums([]);
+    }
+  };
+
+  return {
+    stars,
+    availableNums,
+    candidateNums,
+    secondsLeft,
+    setGameState
+  };
+};
+
+function StarMatchGame({startNewGame}) {
+  const {
+    stars,
+    availableNums,
+    candidateNums,
+    secondsLeft,
+    setGameState
+  } = useStarMatchGameState();
 
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
   const gameStatus = availableNums.length === 0
@@ -83,16 +115,9 @@ function StarMatch({startNewGame}) {
     const newCandidateNums = currentStatus === 'available'
         ? [...candidateNums, number]
         : candidateNums.filter(cn => cn !== number)
-    if (utils.sum(newCandidateNums) !== stars) {
-      setCandidateNums(newCandidateNums);
-    } else {
-      const newAvailableNums = availableNums.filter((item) => {
-        return !newCandidateNums.includes(item)
-      });
-      setStars(utils.randomSumIn(newAvailableNums, 9));
-      setAvailableNums(newAvailableNums);
-      setCandidateNums([]);
-    }
+
+    setGameState(newCandidateNums);
+    
   }
 
   return (
@@ -129,7 +154,7 @@ function StarMatch({startNewGame}) {
 
 function App(){
   const [gameId, setGameId] = useState(1);
-  return <StarMatch key={gameId} startNewGame={() => setGameId(gameId + 1)}/>
+  return <StarMatchGame key={gameId} startNewGame={() => setGameId(gameId + 1)}/>
 }
 
 
