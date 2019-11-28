@@ -6,10 +6,11 @@ import Star from './components/Star';
 function App() {
   const utils = {
     // sum an array
-    sum: arr => arr.reduce((acc, curr) => acc += curr, 0),
+    sum: arr => arr.reduce((acc, curr) => (acc += curr), 0),
 
     // create an array of numbers between min and max (edges included)
-    range: (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i),
+    range: (min, max) =>
+      Array.from({ length: max - min + 1 }, (_, i) => min + i),
 
     // pick a random number between min and max (edges included)
     random: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
@@ -31,15 +32,31 @@ function App() {
       }
       return sums[utils.random(0, sums.length - 1)];
     }
-  }
-  
-  const [stars, setStars] = useState(utils.random(1,9));
+  };
+
+  const [stars, setStars] = useState(utils.random(1, 9));
+  const [availableNums, setAvailableNums] = useState([1, 2, 3, 4, 5]);
+  const [candidateNums, setCandidateNums] = useState([2, 3]);
+
+  const candidatesAreWrong = utils.sum(candidateNums) > stars;
+
+  const numberStatus = number => {
+    if (!availableNums.includes(number)) {
+      return 'used';
+    }
+
+    if (candidateNums.includes(number)) {
+      return candidatesAreWrong ? 'wrong' : 'candidate';
+    }
+
+    return 'available';
+  };
 
   const colors = {
-    available: "red",
+    available: 'lightgray',
     used: 'lightgreen',
     wrong: 'lightcoral',
-    candidate: 'deepskyblue',
+    candidate: 'deepskyblue'
   };
 
   return (
@@ -50,7 +67,13 @@ function App() {
       </div>
 
       <div className="key-pad">
-        <PlayButton range={utils.range(1,9)} />
+        {utils.range(1, 9).map(buttonId => (
+          <PlayButton
+            key={buttonId}
+            buttonId={buttonId}
+            backgroundColor={colors[numberStatus(buttonId)]}
+          />
+        ))}
       </div>
     </div>
   );
