@@ -4,7 +4,7 @@ import PlayButton from './components/PlayButton';
 import PlayAgain from './components/PlayAgain';
 import Star from './components/Star';
 
-function App() {
+function StarMatch({startNewGame}) {
   const utils = {
     // sum an array
     sum: arr => arr.reduce((acc, curr) => (acc += curr), 0),
@@ -55,12 +55,6 @@ function App() {
     ? 'lost'
     : 'active'
 
-  const resetState = () => {
-    setStars(utils.random(1, 9));
-    setAvailableNums(utils.range(1,9));
-    setCandidateNums([]);
-  }
-
   const numberStatus = number => {
     if (!availableNums.includes(number)) {
       return 'used';
@@ -107,7 +101,7 @@ function App() {
       <div className="stars-container">
         {
           gameStatus !== 'active' ? (
-              <PlayAgain onClick={resetState} gameStatus={gameStatus}/>
+              <PlayAgain onClick={startNewGame} gameStatus={gameStatus}/>
           ) : (
             <Star range={utils.range(1, stars)} />
           )
@@ -132,5 +126,11 @@ function App() {
     </div>
   );
 }
+
+function App(){
+  const [gameId, setGameId] = useState(1);
+  return <StarMatch key={gameId} startNewGame={() => setGameId(gameId + 1)}/>
+}
+
 
 export default App;
