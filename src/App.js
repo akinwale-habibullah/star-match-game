@@ -33,7 +33,7 @@ function App() {
     }
   }
   
-  const [stars, setStars] = useState(utils.random(1,9), );
+  const [stars, setStars] = useState(utils.random(1,9));
 
   const colors = {
     available: "red",
@@ -48,12 +48,9 @@ function App() {
       <div className="stars-container">
         <Star range={utils.range(1, stars)} />
       </div>
+
       <div className="key-pad">
-        {
-          utils.range(1, 9).map(buttonId => 
-            <PlayButton key={buttonId} buttonId={buttonId}/>
-          )
-        }
+        <PlayButton range={utils.range(1,9)} />
       </div>
     </div>
   );
