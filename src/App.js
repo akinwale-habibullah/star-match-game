@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import PlayButton from './components/PlayButton';
 import PlayAgain from './components/PlayAgain';
@@ -38,9 +38,22 @@ function App() {
   const [stars, setStars] = useState(utils.random(1, 9));
   const [availableNums, setAvailableNums] = useState(utils.range(1,9));
   const [candidateNums, setCandidateNums] = useState([]);
+  const [secondsLeft, setSecondsLeft] = useState(10);
+  useEffect(() => {
+    if (secondsLeft  > 0 && gameStatus === 'active') {
+      const timerId = setTimeout(() => {
+        setSecondsLeft(secondsLeft - 1);
+      }, 1000);
+
+      return () => clearTimeout(timerId);
+    }
+  });
 
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
-  const gameIsDone = availableNums.length === 0;
+  const gameStatus = availableNums.length === 0
+    ? 'won' : secondsLeft === 0 
+    ? 'lost'
+    : 'active'
 
   const resetState = () => {
     setStars(utils.random(1, 9));
@@ -68,7 +81,7 @@ function App() {
   };
 
   const onNumberClick = (number, currentStatus) => {
-    if (currentStatus === 'used') {
+    if (currentStatus === 'used' || gameStatus !== 'active') {
       return;
     }
 
@@ -93,11 +106,11 @@ function App() {
       <h3>Pick 1 or more number numbers that sum up to the number of stars</h3>
       <div className="stars-container">
         {
-          gameIsDone ? (
-              <PlayAgain onClick={resetState}/>
-            ) : (
-              <Star range={utils.range(1, stars)} />
-            )
+          gameStatus !== 'active' ? (
+              <PlayAgain onClick={resetState} gameStatus={gameStatus}/>
+          ) : (
+            <Star range={utils.range(1, stars)} />
+          )
         }
       </div>
 
@@ -111,6 +124,10 @@ function App() {
             onClick={onNumberClick}
           />
         ))}
+      </div>
+
+      <div className="timer">
+        <p><b>Time Remaining:</b> <em>{secondsLeft}</em></p>
       </div>
     </div>
   );
