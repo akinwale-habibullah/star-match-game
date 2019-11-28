@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import PlayButton from './components/PlayButton';
+import PlayAgain from './components/PlayAgain';
 import Star from './components/Star';
 
 function App() {
@@ -39,6 +40,13 @@ function App() {
   const [candidateNums, setCandidateNums] = useState([]);
 
   const candidatesAreWrong = utils.sum(candidateNums) > stars;
+  const gameIsDone = availableNums.length === 0;
+
+  const resetState = () => {
+    setStars(utils.random(1, 9));
+    setAvailableNums(utils.range(1,9));
+    setCandidateNums([]);
+  }
 
   const numberStatus = number => {
     if (!availableNums.includes(number)) {
@@ -84,7 +92,13 @@ function App() {
     <div className="App">
       <h3>Pick 1 or more number numbers that sum up to the number of stars</h3>
       <div className="stars-container">
-        <Star range={utils.range(1, stars)} />
+        {
+          gameIsDone ? (
+              <PlayAgain onClick={resetState}/>
+            ) : (
+              <Star range={utils.range(1, stars)} />
+            )
+        }
       </div>
 
       <div className="key-pad">
